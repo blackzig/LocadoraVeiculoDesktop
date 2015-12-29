@@ -6,10 +6,15 @@
 package br.com.locadoraveiculodesktop.telas;
 
 import br.com.locadoraveiculodesktop.classes.Fabricante;
-import br.com.locadoraveiculodesktop.enviar.HttpJsonUniversal;
+import br.com.locadoraveiculodesktop.recurso.FabricanteRecurso;
+import br.com.locadoraveiculodesktop.util.RespostaServidor;
 import com.google.gson.Gson;
+import java.awt.Button;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,6 +23,8 @@ import javax.swing.JOptionPane;
 public class FabricanteTela extends javax.swing.JInternalFrame {
 
     JMenuItem FabricanteMenu;
+
+    List<Fabricante> listaFabricante = new ArrayList<>();
 
     public FabricanteTela(JMenuItem FabricanteMenu) {
         initComponents();
@@ -42,6 +49,10 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         JTF_Fabricante = new javax.swing.JTextField();
         JB_Salvar = new javax.swing.JButton();
         JL_Mensagem = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        JTable_Fabricante = new javax.swing.JTable();
+        JB_Pesquisar = new javax.swing.JButton();
+        JTF_Pesquisar = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -49,20 +60,20 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Fabricante");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameClosed(evt);
             }
-            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
-            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
         });
 
@@ -85,6 +96,31 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         JL_Mensagem.setForeground(new java.awt.Color(255, 0, 0));
         JL_Mensagem.setText("Mensagens do sistema");
 
+        JTable_Fabricante.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Código", "Fabricante", "Editar", "Excluir"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(JTable_Fabricante);
+
+        JB_Pesquisar.setText("Pesquisar");
+        JB_Pesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JB_PesquisarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -98,12 +134,19 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(JTF_Codigo, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(JTF_Codigo, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(JL_Mensagem))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(JTF_Fabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(JB_Salvar))))
-                    .addComponent(JL_Mensagem))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(JB_Pesquisar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(525, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -112,15 +155,20 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(JTF_Codigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JTF_Codigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JL_Mensagem))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(JTF_Fabricante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JB_Salvar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(JL_Mensagem)
-                .addContainerGap(383, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JB_Pesquisar)
+                    .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(132, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel1);
@@ -152,27 +200,74 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
             Gson gson = new Gson();
             String json = gson.toJson(fabricante);
 
-            HttpJsonUniversal hju = new HttpJsonUniversal();
+            FabricanteRecurso fr = new FabricanteRecurso();
             String urlPart = "fabricante/inserirFabricante";
-            hju.enviar(json, urlPart);
+            int resposta = fr.enviar(json, urlPart);
+
+            RespostaServidor rs = new RespostaServidor();
+            String mensagem = rs.retornarResposta(resposta);
+
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText(mensagem);
 
             JTF_Fabricante.setText("");
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), "ERRO!!!", 0);
         }
     }//GEN-LAST:event_JB_SalvarActionPerformed
 
+    private void JB_PesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_PesquisarActionPerformed
+        try {
+            FabricanteRecurso fr = new FabricanteRecurso();
+
+            String urlPart = "fabricante/todos";
+            listaFabricante = fr.trazerTodosOsFabricantes(urlPart);
+
+            atualizar_tabela();
+
+        } catch (Exception e) {
+                JL_Mensagem.setVisible(true);
+                JL_Mensagem.setText("Erro: "+e.getMessage());
+        }
+    }//GEN-LAST:event_JB_PesquisarActionPerformed
+
+    private void atualizar_tabela() {
+        try {
+            
+            DefaultTableModel modelo = (DefaultTableModel) JTable_Fabricante.getModel();
+            modelo.setRowCount(0);
+            
+            if(listaFabricante.isEmpty()){
+                JL_Mensagem.setVisible(true);
+                JL_Mensagem.setText("Nenhum resultado encontrado.");
+            }
+            else{
+                listaFabricante.stream().forEach((_item) -> {
+                    modelo.addRow(new Object[]{
+                        _item.getCodigo(), _item.getNome()
+                    });
+                });
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "ERRO!!!", 0);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton JB_Pesquisar;
     private javax.swing.JButton JB_Salvar;
     private javax.swing.JLabel JL_Mensagem;
     private javax.swing.JTextField JTF_Codigo;
     private javax.swing.JTextField JTF_Fabricante;
+    private javax.swing.JTextField JTF_Pesquisar;
+    private javax.swing.JTable JTable_Fabricante;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 
 }
