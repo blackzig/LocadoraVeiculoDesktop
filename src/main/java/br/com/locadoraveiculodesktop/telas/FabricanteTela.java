@@ -8,12 +8,14 @@ package br.com.locadoraveiculodesktop.telas;
 import br.com.locadoraveiculodesktop.classes.Fabricante;
 import br.com.locadoraveiculodesktop.recurso.FabricanteRecurso;
 import br.com.locadoraveiculodesktop.util.RespostaServidor;
+import br.com.locadoraveiculodesktop.util.TableCellRendererColor;
 import com.google.gson.Gson;
-import java.awt.Button;
+import com.sun.glass.events.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,11 +25,20 @@ import javax.swing.table.DefaultTableModel;
 public class FabricanteTela extends javax.swing.JInternalFrame {
 
     JMenuItem FabricanteMenu;
+    int editar = 0;
+
+    Long codigo;
+    String fabricanteNome;
+
+    int linha = 0;
+    int coluna = 0;
 
     List<Fabricante> listaFabricante = new ArrayList<>();
 
     public FabricanteTela(JMenuItem FabricanteMenu) {
         initComponents();
+        JTable_Fabricante.setDefaultRenderer(Object.class, new TableCellRendererColor());
+        
         this.FabricanteMenu = FabricanteMenu;
         JL_Mensagem.setVisible(false);
     }
@@ -43,8 +54,6 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        JTF_Codigo = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         JTF_Fabricante = new javax.swing.JTextField();
         JB_Salvar = new javax.swing.JButton();
@@ -77,11 +86,6 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel1.setText("Código: ");
-
-        JTF_Codigo.setEditable(false);
-
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText("Fabricante: ");
 
@@ -96,20 +100,33 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         JL_Mensagem.setForeground(new java.awt.Color(255, 0, 0));
         JL_Mensagem.setText("Mensagens do sistema");
 
+        JTable_Fabricante.setBackground(new java.awt.Color(255, 255, 255));
+        JTable_Fabricante.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        JTable_Fabricante.setForeground(new java.awt.Color(255, 255, 255));
         JTable_Fabricante.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Código", "Fabricante", "Editar", "Excluir"
+                "Código", "Fabricante"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, true
+                false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        JTable_Fabricante.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JTable_FabricanteMouseClicked(evt);
+            }
+        });
+        JTable_Fabricante.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JTable_FabricanteKeyPressed(evt);
             }
         });
         jScrollPane2.setViewportView(JTable_Fabricante);
@@ -129,34 +146,24 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(JTF_Codigo, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(JL_Mensagem))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(JTF_Fabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(JB_Salvar))))
+                        .addComponent(JTF_Fabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JB_Salvar))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(JB_Pesquisar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JL_Mensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 506, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(525, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(JTF_Codigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JL_Mensagem))
+                .addGap(21, 21, 21)
+                .addComponent(JL_Mensagem)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -168,7 +175,7 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
                     .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(132, Short.MAX_VALUE))
+                .addContainerGap(134, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel1);
@@ -195,6 +202,9 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         try {
             Fabricante fabricante = new Fabricante();
             fabricante.setNome(JTF_Fabricante.getText());
+            if (editar == 1) {
+                fabricante.setCodigo(codigo);
+            }
 
             //código que faz o trabalho ;-) cria o JSON
             Gson gson = new Gson();
@@ -202,7 +212,7 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
 
             FabricanteRecurso fr = new FabricanteRecurso();
             String urlPart = "fabricante/inserirFabricante";
-            int resposta = fr.enviar(json, urlPart);
+            int resposta = fr.salvar(json, urlPart);
 
             RespostaServidor rs = new RespostaServidor();
             String mensagem = rs.retornarResposta(resposta);
@@ -212,37 +222,129 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
 
             JTF_Fabricante.setText("");
 
+            if (editar == 1) {
+                editar = 0;
+                JB_PesquisarActionPerformed(null);
+            }
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "ERRO!!!", 0);
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Erro: " + e.getMessage());
         }
     }//GEN-LAST:event_JB_SalvarActionPerformed
 
     private void JB_PesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_PesquisarActionPerformed
         try {
             FabricanteRecurso fr = new FabricanteRecurso();
+            String palavra = JTF_Pesquisar.getText();
 
-            String urlPart = "fabricante/todos";
-            listaFabricante = fr.trazerTodosOsFabricantes(urlPart);
+            if (palavra.equals("")) {
+                String urlPart = "fabricante/todos";
+                listaFabricante = fr.pesquisar(urlPart);
+            } else {
+                String urlPart = "fabricante/todos/" + palavra;
+                listaFabricante = fr.pesquisar(urlPart);
+            }
 
             atualizar_tabela();
 
         } catch (Exception e) {
-                JL_Mensagem.setVisible(true);
-                JL_Mensagem.setText("Erro: "+e.getMessage());
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Erro: " + e.getMessage());
         }
     }//GEN-LAST:event_JB_PesquisarActionPerformed
 
+    private void JTable_FabricanteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTable_FabricanteKeyPressed
+        try {
+
+            int code = evt.getKeyCode();
+            if (code == KeyEvent.VK_DELETE) {
+                Object[] options = {"Sim", "Não"};
+                int opcao = JOptionPane.showOptionDialog(null, "Tem certeza que deseja excluir este registro", "Atenção!!!",
+                        JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                if (opcao == JOptionPane.YES_OPTION) {
+                    FabricanteRecurso fr = new FabricanteRecurso();
+                    Long id = codigo;
+                    String urlPart = "fabricante/remove/" + id;
+                    int resposta = fr.excluir(urlPart);
+
+                    RespostaServidor rs = new RespostaServidor();
+                    String mensagem = rs.retornarResposta(resposta);
+
+                    System.out.println("mensagem " + mensagem);
+
+                    JTF_Fabricante.setText("");
+
+                    JB_PesquisarActionPerformed(null);
+                }
+            } else if (linha + 1 == listaFabricante.size()) {
+                if (code == KeyEvent.VK_UP) {
+                    linha--;
+                    usando_setas();
+                } else if (code == KeyEvent.VK_DOWN) {
+                    JL_Mensagem.setVisible(true);
+                    JL_Mensagem.setText("Fim da lista.");
+                } else {
+                    linha = 0;
+                    usando_setas();
+                }
+
+            } else {
+                if ((code == KeyEvent.VK_DOWN || code == KeyEvent.VK_ENTER)) {
+
+                    if (listaFabricante.size() - 1 > linha) {
+                        linha++;
+                        usando_setas();
+                    }
+
+                } else if (code == KeyEvent.VK_UP && linha > 0) {
+                    linha--;
+                    usando_setas();
+                }
+            }
+
+        } catch (Exception e) {
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Erro: " + e.getMessage());
+        }
+    }//GEN-LAST:event_JTable_FabricanteKeyPressed
+
+    private void JTable_FabricanteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTable_FabricanteMouseClicked
+        try {
+            editar = 1;
+            linha = JTable_Fabricante.getSelectedRow();
+            coluna = JTable_Fabricante.getSelectedColumn();
+            JTable_Fabricante.editCellAt(linha, coluna);
+
+            codigo = (Long) JTable_Fabricante.getValueAt(linha, 0);
+            fabricanteNome = (String) JTable_Fabricante.getValueAt(linha, 1);
+
+            JTF_Fabricante.setText(fabricanteNome);
+
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Pressione a tecla delete do teclado para excluir um registro");
+
+            System.out.println("linha mouse clicou " + linha);
+
+        } catch (Exception e) {
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Erro: " + e.getMessage());
+        }
+    }//GEN-LAST:event_JTable_FabricanteMouseClicked
+
     private void atualizar_tabela() {
         try {
-            
+            JTable_Fabricante.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            JTable_Fabricante.getColumnModel().getColumn(0).setPreferredWidth(100);
+            JTable_Fabricante.getColumnModel().getColumn(1).setPreferredWidth(400);
+
             DefaultTableModel modelo = (DefaultTableModel) JTable_Fabricante.getModel();
             modelo.setRowCount(0);
-            
-            if(listaFabricante.isEmpty()){
+
+            if (listaFabricante.isEmpty()) {
                 JL_Mensagem.setVisible(true);
                 JL_Mensagem.setText("Nenhum resultado encontrado.");
-            }
-            else{
+            } else {
                 listaFabricante.stream().forEach((_item) -> {
                     modelo.addRow(new Object[]{
                         _item.getCodigo(), _item.getNome()
@@ -251,7 +353,26 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "ERRO!!!", 0);
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Erro: " + e.getMessage());
+        }
+    }
+
+    public void usando_setas() {
+        try {
+
+            // System.out.println("linha us " + linha);
+            codigo = (Long) JTable_Fabricante.getValueAt(linha, 0);
+            fabricanteNome = (String) JTable_Fabricante.getValueAt(linha, 1);
+
+            JTF_Fabricante.setText(fabricanteNome);
+
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Você está em " + fabricanteNome);
+
+        } catch (Exception e) {
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Erro: " + e.getMessage());
         }
     }
 
@@ -259,11 +380,9 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
     private javax.swing.JButton JB_Pesquisar;
     private javax.swing.JButton JB_Salvar;
     private javax.swing.JLabel JL_Mensagem;
-    private javax.swing.JTextField JTF_Codigo;
     private javax.swing.JTextField JTF_Fabricante;
     private javax.swing.JTextField JTF_Pesquisar;
     private javax.swing.JTable JTable_Fabricante;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

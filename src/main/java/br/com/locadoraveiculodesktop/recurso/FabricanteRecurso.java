@@ -26,7 +26,7 @@ import java.util.List;
 
 public class FabricanteRecurso {
 
-    public int enviar(String input, String urlPart) {
+    public int salvar(String input, String urlPart) {
         //casa
         //  String targetURL = "http://localhost:43230/locadoraveiculo/rest/"+urlPart;
         //serviço
@@ -72,8 +72,52 @@ public class FabricanteRecurso {
         return 0;
 
     }//fim enviar
+    
+    public int excluir(String urlPart) {
+        //casa
+        //  String targetURL = "http://localhost:43230/locadoraveiculo/rest/"+urlPart;
+        //serviço
+        String targetURL = "http://localhost:2411/locadoraveiculo/rest/" + urlPart;
+        try {
 
-    public List<Fabricante> trazerTodosOsFabricantes(String urlPart) {
+            URL targetUrl = new URL(targetURL);
+
+            HttpURLConnection httpConnection = (HttpURLConnection) targetUrl.openConnection();
+            httpConnection.setDoOutput(true);
+            httpConnection.setRequestMethod("DELETE");
+            httpConnection.setRequestProperty("Content-Type", "application/json");
+
+
+            int resposta = httpConnection.getResponseCode();
+
+            if (httpConnection.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + httpConnection.getResponseCode());
+
+            }
+
+            BufferedReader responseBuffer = new BufferedReader(new InputStreamReader(
+                    (httpConnection.getInputStream())));
+
+            String output;
+            System.out.println("Output from Server:\n");
+            while ((output = responseBuffer.readLine()) != null) {
+                System.out.println(output);
+            }
+
+            httpConnection.disconnect();
+
+            System.out.println("resposta servidor " + resposta);
+
+            return resposta;
+        } catch (IOException | RuntimeException e) {
+            System.out.println("erro " + e.getMessage());
+        }
+        return 0;
+
+    }//fim enviar
+
+    public List<Fabricante> pesquisar(String urlPart) {
         //casa
         //  String targetURL = "http://localhost:43230/locadoraveiculo/rest/"+urlPart;
         //serviço
