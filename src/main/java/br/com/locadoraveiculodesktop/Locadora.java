@@ -5,6 +5,7 @@
  */
 package br.com.locadoraveiculodesktop;
 
+import br.com.locadoraveiculodesktop.telas.Login;
 import br.com.locadoraveiculodesktop.telas.Principal;
 
 /**
@@ -14,8 +15,9 @@ import br.com.locadoraveiculodesktop.telas.Principal;
 public class Locadora {
     
     public static void main(String args[]){
-        Principal p = new Principal();
-        p.setVisible(true);
+       // Principal p = new Principal();
+        Login l = new Login();
+        l.setVisible(true);
     }
     
 }

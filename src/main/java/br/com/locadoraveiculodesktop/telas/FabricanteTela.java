@@ -17,6 +17,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -38,7 +39,7 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
     public FabricanteTela(JMenuItem FabricanteMenu) {
         initComponents();
         JTable_Fabricante.setDefaultRenderer(Object.class, new TableCellRendererColor());
-        
+
         this.FabricanteMenu = FabricanteMenu;
         JL_Mensagem.setVisible(false);
     }
@@ -62,6 +63,7 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         JTable_Fabricante = new javax.swing.JTable();
         JB_Pesquisar = new javax.swing.JButton();
         JTF_Pesquisar = new javax.swing.JTextField();
+        JB_Novo = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -69,20 +71,20 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Fabricante");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameClosed(evt);
             }
-            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
-            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
 
@@ -100,7 +102,6 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         JL_Mensagem.setForeground(new java.awt.Color(255, 0, 0));
         JL_Mensagem.setText("Mensagens do sistema");
 
-        JTable_Fabricante.setBackground(new java.awt.Color(255, 255, 255));
         JTable_Fabricante.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         JTable_Fabricante.setForeground(new java.awt.Color(255, 255, 255));
         JTable_Fabricante.setModel(new javax.swing.table.DefaultTableModel(
@@ -138,6 +139,13 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
             }
         });
 
+        JB_Novo.setText("Novo");
+        JB_Novo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JB_NovoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -145,19 +153,24 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JL_Mensagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(JTF_Fabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(JB_Salvar))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(JB_Pesquisar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(JL_Mensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 506, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(525, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(JTF_Fabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(JB_Salvar))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(JB_Pesquisar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(JB_Novo)))
+                        .addGap(0, 515, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,10 +185,11 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JB_Pesquisar)
-                    .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JTF_Pesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JB_Novo))
                 .addGap(9, 9, 9)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(134, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel1);
@@ -201,7 +215,7 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
     private void JB_SalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_SalvarActionPerformed
         try {
             Fabricante fabricante = new Fabricante();
-            fabricante.setNome(JTF_Fabricante.getText());
+            fabricante.setNome(JTF_Fabricante.getText().toUpperCase());
             if (editar == 1) {
                 fabricante.setCodigo(codigo);
             }
@@ -213,6 +227,8 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
             FabricanteRecurso fr = new FabricanteRecurso();
             String urlPart = "fabricante/inserirFabricante";
             int resposta = fr.salvar(json, urlPart);
+            
+            System.out.println("resposta int "+resposta);
 
             RespostaServidor rs = new RespostaServidor();
             String mensagem = rs.retornarResposta(resposta);
@@ -229,14 +245,14 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
 
         } catch (Exception e) {
             JL_Mensagem.setVisible(true);
-            JL_Mensagem.setText("Erro: " + e.getMessage());
+            JL_Mensagem.setText("Erro tela salvar: " + e.getMessage());
         }
     }//GEN-LAST:event_JB_SalvarActionPerformed
 
     private void JB_PesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_PesquisarActionPerformed
         try {
             FabricanteRecurso fr = new FabricanteRecurso();
-            String palavra = JTF_Pesquisar.getText();
+            String palavra = JTF_Pesquisar.getText().toUpperCase();
 
             if (palavra.equals("")) {
                 String urlPart = "fabricante/todos";
@@ -332,6 +348,18 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_JTable_FabricanteMouseClicked
 
+    private void JB_NovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_NovoActionPerformed
+        try {
+            JTF_Fabricante.setText("");
+            editar = 0;
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Digite o nome do novo fabricante.");
+        } catch (Exception e) {
+            JL_Mensagem.setVisible(true);
+            JL_Mensagem.setText("Erro: " + e.getMessage());
+        }
+    }//GEN-LAST:event_JB_NovoActionPerformed
+
     private void atualizar_tabela() {
         try {
             JTable_Fabricante.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -377,6 +405,7 @@ public class FabricanteTela extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton JB_Novo;
     private javax.swing.JButton JB_Pesquisar;
     private javax.swing.JButton JB_Salvar;
     private javax.swing.JLabel JL_Mensagem;

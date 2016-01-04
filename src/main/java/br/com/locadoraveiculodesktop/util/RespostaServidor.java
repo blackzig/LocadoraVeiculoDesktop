@@ -12,16 +12,27 @@ package br.com.locadoraveiculodesktop.util;
 public class RespostaServidor {
 
     public String retornarResposta(int resposta) {
-        System.out.println("resposta " + resposta);
+        System.out.println("resposta res " + resposta);
         String r = null;
-        if (resposta == 200) {
-            r = "Tarefa executada com sucesso.";
-        } else if (resposta == 0) {
-            r = "Preencha todos os campos necessários";
-        } else if (resposta == 404) {
-            r = "Servidor fora do ar ou caminho de comunicação incorreto.";
-        } else {
-            r = "Erro desconhecido";
+        switch (resposta) {
+            case 200:
+                r = "Tarefa executada com sucesso.";
+                break;
+            case 204:
+                r = "Preencha todos os campos necessários.";
+                break;
+            case 401:
+                r = "Você não tem autorização para realizar está tarefa.";
+                break;
+            case 404:
+                r = "Servidor fora do ar ou caminho de comunicação incorreto.";
+                break;
+            case 500:
+                r = "Erro no servidor.";
+                break;
+            default:
+                r = "Erro desconhecido";
+                break;
         }
         return r;
     }

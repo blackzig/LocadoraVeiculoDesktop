@@ -13,6 +13,7 @@ package br.com.locadoraveiculodesktop.recurso;
  * http://examples.javacodegeeks.com/enterprise-java/rest/restful-java-client-with-java-net-url/
  */
 import br.com.locadoraveiculodesktop.classes.Fabricante;
+import br.com.locadoraveiculodesktop.util.ConfServidor;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
@@ -23,14 +24,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.Response;
 
 public class FabricanteRecurso {
 
+    String servidorCasa = null;
+    int resposta = 0;
+
+    public FabricanteRecurso() {
+        servidorCasa = ConfServidor.getUrlServidorCasa();
+        System.out.println("servidorCasa " + servidorCasa);
+    }
+
     public int salvar(String input, String urlPart) {
         //casa
-        //  String targetURL = "http://localhost:43230/locadoraveiculo/rest/"+urlPart;
+        String targetURL = servidorCasa + "locadoraveiculo/rest/" + urlPart;
         //serviço
-        String targetURL = "http://localhost:2411/locadoraveiculo/rest/" + urlPart;
+        //String targetURL = "http://localhost:2411/locadoraveiculo/rest/" + urlPart;
         try {
 
             URL targetUrl = new URL(targetURL);
@@ -44,7 +54,7 @@ public class FabricanteRecurso {
             outputStream.write(input.getBytes());
             outputStream.flush();
 
-            int resposta = httpConnection.getResponseCode();
+            resposta = httpConnection.getResponseCode();
 
             if (httpConnection.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP error code : "
@@ -63,21 +73,20 @@ public class FabricanteRecurso {
 
             httpConnection.disconnect();
 
-            System.out.println("resposta servidor " + resposta);
-
             return resposta;
         } catch (IOException | RuntimeException e) {
-            System.out.println("erro " + e.getMessage());
+
+            System.out.println("erro ao salvar " + e.getMessage());
         }
-        return 0;
+        return resposta;
 
     }//fim enviar
-    
+
     public int excluir(String urlPart) {
         //casa
-        //  String targetURL = "http://localhost:43230/locadoraveiculo/rest/"+urlPart;
+        String targetURL = servidorCasa + "locadoraveiculo/rest/" + urlPart;
         //serviço
-        String targetURL = "http://localhost:2411/locadoraveiculo/rest/" + urlPart;
+        //String targetURL = "http://localhost:2411/locadoraveiculo/rest/" + urlPart;
         try {
 
             URL targetUrl = new URL(targetURL);
@@ -87,8 +96,7 @@ public class FabricanteRecurso {
             httpConnection.setRequestMethod("DELETE");
             httpConnection.setRequestProperty("Content-Type", "application/json");
 
-
-            int resposta = httpConnection.getResponseCode();
+            resposta = httpConnection.getResponseCode();
 
             if (httpConnection.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP error code : "
@@ -113,15 +121,15 @@ public class FabricanteRecurso {
         } catch (IOException | RuntimeException e) {
             System.out.println("erro " + e.getMessage());
         }
-        return 0;
+        return resposta;
 
     }//fim enviar
 
     public List<Fabricante> pesquisar(String urlPart) {
         //casa
-        //  String targetURL = "http://localhost:43230/locadoraveiculo/rest/"+urlPart;
+        String targetURL = servidorCasa + "locadoraveiculo/rest/" + urlPart;
         //serviço
-        String targetURL = "http://localhost:2411/locadoraveiculo/rest/" + urlPart;
+        //  String targetURL = "http://localhost:2411/locadoraveiculo/rest/" + urlPart;
 
         List<Fabricante> listaFabricante = new ArrayList<>();
 
@@ -146,9 +154,10 @@ public class FabricanteRecurso {
 
             while ((output = responseBuffer.readLine()) != null) {
                 System.out.println(output);
-                TypeToken<List<Fabricante>> token = new TypeToken<List<Fabricante>>(){};
+                TypeToken<List<Fabricante>> token = new TypeToken<List<Fabricante>>() {
+                };
                 listaFabricante = new Gson().fromJson(output, token.getType());
-                System.out.println("listaFabricante "+listaFabricante.size());
+                System.out.println("listaFabricante " + listaFabricante.size());
             }
 
             httpConnection.disconnect();
